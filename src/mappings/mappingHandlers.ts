@@ -2,6 +2,13 @@ import { EventRecord } from "@polkadot/types/interfaces";
 import { SubstrateExtrinsic, SubstrateBlock } from "@subql/types";
 import { SpecVersion, Event, Extrinsic } from "../types";
 
+interface transferArgs {
+    dest: {
+		Id : string;
+	};
+    value: string;
+}
+
 let specVersion: SpecVersion;
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
   // Initialise Spec Version
@@ -57,7 +64,8 @@ function handleCall(idx: string, extrinsic: SubstrateExtrinsic): Extrinsic {
   newExtrinsic.module = extrinsic.extrinsic.method.section;
   newExtrinsic.call = extrinsic.extrinsic.method.method;
   if (newExtrinsic.module == "balances" && newExtrinsic.call == "transfer"){
-	newExtrinsic.value = extrinsic.extrinsic.method.args[1].toString();
+	let obj: transferArgs = JSON.parse(JSON.stringify(extrinsic.extrinsic.method.args));
+	newExtrinsic.value = obj.value;
   }
   newExtrinsic.blockHeight = extrinsic.block.block.header.number.toBigInt();
   newExtrinsic.success = extrinsic.success;
