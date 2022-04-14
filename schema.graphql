@@ -18,4 +18,5 @@ type Extrinsic @entity {
   blockHeight: BigInt! @index
   success: Boolean!
   isSigned: Boolean!
+  value: String
 }
