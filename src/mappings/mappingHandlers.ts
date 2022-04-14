@@ -1,12 +1,17 @@
+import { createType, createTypeUnsafe, TypeRegistry } from "@polkadot/types";
 import { EventRecord } from "@polkadot/types/interfaces";
 import { SubstrateExtrinsic, SubstrateBlock } from "@subql/types";
 import { SpecVersion, Event, Extrinsic } from "../types";
 
-interface transferArgs {
+interface method {
+  agrs: {
     dest: {
-		Id : string;
-	};
+      Id: string;
+    };
     value: string;
+  };
+  method :string;
+  section : string;
 }
 
 let specVersion: SpecVersion;
@@ -27,8 +32,10 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
   const events = block.events
     .filter(
       (evt) =>
-        !(evt.event.section === "system" &&
-        evt.event.method === "ExtrinsicSuccess")
+        !(
+          evt.event.section === "system" &&
+          evt.event.method === "ExtrinsicSuccess"
+        )
     )
     .map((evt, idx) =>
       handleEvent(block.block.header.number.toString(), idx, evt)
@@ -63,9 +70,9 @@ function handleCall(idx: string, extrinsic: SubstrateExtrinsic): Extrinsic {
   newExtrinsic.txHash = extrinsic.extrinsic.hash.toString();
   newExtrinsic.module = extrinsic.extrinsic.method.section;
   newExtrinsic.call = extrinsic.extrinsic.method.method;
-  if (newExtrinsic.module == "balances" && newExtrinsic.call == "transfer"){
-	let obj: transferArgs = JSON.parse(JSON.stringify(extrinsic.extrinsic.method.args));
-	newExtrinsic.value = obj.value;
+  if (newExtrinsic.module == "balances" && newExtrinsic.call == "transfer") {
+	let obj: method = JSON.parse(JSON.stringify(extrinsic.extrinsic.method.toHuman()));
+	newExtrinsic.value = obj.agrs.value;
   }
   newExtrinsic.blockHeight = extrinsic.block.block.header.number.toBigInt();
   newExtrinsic.success = extrinsic.success;
