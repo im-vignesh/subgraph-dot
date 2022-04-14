@@ -4,14 +4,14 @@ import { SubstrateExtrinsic, SubstrateBlock } from "@subql/types";
 import { SpecVersion, Event, Extrinsic } from "../types";
 
 interface method {
-  agrs: {
+  args: {
     dest: {
       Id: string;
     };
     value: string;
   };
-  method :string;
-  section : string;
+  method: string;
+  section: string;
 }
 
 let specVersion: SpecVersion;
@@ -71,7 +71,8 @@ function handleCall(idx: string, extrinsic: SubstrateExtrinsic): Extrinsic {
   newExtrinsic.module = extrinsic.extrinsic.method.section;
   newExtrinsic.call = extrinsic.extrinsic.method.method;
   if (newExtrinsic.module == "balances" && newExtrinsic.call == "transfer") {
-	newExtrinsic.value =JSON.stringify(extrinsic.extrinsic.method.toHuman());
+	let obj: method = JSON.parse(JSON.stringify(extrinsic.extrinsic.method.toHuman()));
+	newExtrinsic.value =obj.args.value;
   }
   newExtrinsic.blockHeight = extrinsic.block.block.header.number.toBigInt();
   newExtrinsic.success = extrinsic.success;
