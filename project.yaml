@@ -11,7 +11,7 @@ network:
   endpoint: wss://polkadot.api.onfinality.io/public-ws
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 9800000
+    startBlock: 9870000
     mapping:
       file: ./dist/index.js
       handlers:
