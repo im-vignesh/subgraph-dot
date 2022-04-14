@@ -19,4 +19,5 @@ type Extrinsic @entity {
   success: Boolean!
   isSigned: Boolean!
   value: String
+  destId: String
 }

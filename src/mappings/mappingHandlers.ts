@@ -73,6 +73,7 @@ function handleCall(idx: string, extrinsic: SubstrateExtrinsic): Extrinsic {
   if (newExtrinsic.module == "balances" && newExtrinsic.call == "transfer") {
 	let obj: method = JSON.parse(JSON.stringify(extrinsic.extrinsic.method.toHuman()));
 	newExtrinsic.value =obj.args.value;
+	newExtrinsic.destId = obj.args.dest.Id;
   }
   newExtrinsic.blockHeight = extrinsic.block.block.header.number.toBigInt();
   newExtrinsic.success = extrinsic.success;
